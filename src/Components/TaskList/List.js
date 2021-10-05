@@ -16,7 +16,7 @@ import {
 import { updateBreadcrumbPath } from "../../Redux/actions/breadcrumbActions";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { createTask , updateTask} from "../../api/todoApi";
+import { createTask, updateTask } from "../../api/todoApi";
 import SimpleReactValidator from "simple-react-validator";
 import { useHistory } from "react-router-dom";
 import LoadingIndicator from "../shered/loadingIndicator.js/LoadingIndicator";
@@ -67,7 +67,7 @@ const List = () => {
 
   React.useEffect(() => {
     const data = JSON.parse(localStorage.getItem("task"));
-    if (!!data && !update && (operation === "edit"|| operation === "view")) {
+    if (!!data && !update && (operation === "edit" || operation === "view")) {
       setUpdate(true);
       setTask(data);
     }
@@ -82,16 +82,22 @@ const List = () => {
 
   const handleApply = async () => {
     let cloneTask = { ...task };
-    console.log(cloneTask)
+    console.log(cloneTask);
     try {
-      setLoading(true);
-      if(operation === "create"){
-      await createTask(cloneTask);
-      toast.success("Task is created successfully.");
-      setLoading(false);
-      return history.push("/");
+      if (task?.description?.length >= CHARACTER_LIMIT) {
+        return toast.error("no longer then 500 charactor");
       }
-      await updateTask(cloneTask.id,cloneTask);
+      if(!simpleValidator.allValid()){
+        return toast.error("invalid inputs");
+      }
+      setLoading(true);
+      if (operation === "create") {
+        await createTask(cloneTask);
+        toast.success("Task is created successfully.");
+        setLoading(false);
+        return history.push("/");
+      }
+      await updateTask(cloneTask.id, cloneTask);
       toast.success("Task is upadte successfully.");
       setLoading(false);
       return history.push("/");
@@ -104,14 +110,10 @@ const List = () => {
   };
 
   const handleChange = (e) => {
-    if (task?.description?.length >= CHARACTER_LIMIT) {
-      return toast.error("no longer then 500 charactor");
-    }
     setTask({
       ...task,
       [e.target.name]: e.target.value,
     });
-
   };
 
   return (
@@ -130,7 +132,11 @@ const List = () => {
             minHeight="6vh"
             className="mt-3"
           >
-            <Typography variant="h3">Create Task</Typography>
+            <Typography variant="h3">
+              {(operation === "edit" && "Edit Task") ||
+                (operation === "create" && "Create Task") ||
+                (operation === "view" && "View Task")}
+            </Typography>
           </Box>
         </Grid>
       </Grid>
@@ -193,13 +199,16 @@ const List = () => {
                       name="status"
                       onChange={handleChange}
                       disabled={
-                        operation === "edit" || (operation === "view"  && task.status !== "pending")}
+                        operation === "edit" ||
+                        (operation === "view" && task.status !== "pending")
+                      }
                     >
                       <MenuItem value="">--None--</MenuItem>
 
                       <MenuItem value="pending">Pending</MenuItem>
-                     {operation === "view"|| operation === "edit" &&
-                      <MenuItem value="done">Done</MenuItem>}
+                      {(operation === "view" || operation === "edit") && (
+                        <MenuItem value="done">Done</MenuItem>
+                      )}
                     </Select>
                     <FormHelperText>Status of the task</FormHelperText>
                   </FormControl>
@@ -237,22 +246,23 @@ const List = () => {
             paddingRight="1%"
             className="mb-3"
           >
-  
             <Box
               width={["100%", "140px"]}
-              variant="contained"
-              disabled={loading || !simpleValidator.allValid()}
+              variant="contained"          
               className="m-1"
               onClick={handleApply}
             >
-          {    <Button
-                fullWidth
-                disableElevation
-                color="secondary"
-                variant="contained"
-              >
-                Save
-              </Button>}
+              {
+                <Button
+                disabled={( operation ==="view" && task.status ==="pending")}
+                  fullWidth
+                  disableElevation
+                  color="secondary"
+                  variant="contained"
+                >
+                  Save
+                </Button>
+              }
             </Box>
           </Box>
         </Box>
