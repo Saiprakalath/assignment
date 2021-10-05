@@ -1,0 +1,45 @@
+@import "utilities.css";
+
+.App {
+  height: 100%;
+}
+
+.App-router-view {
+  height: 91vh;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+@media screen and (max-width: 456px) {
+  .App-router-view {
+    padding-top: 20px;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.development_message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 92vh;
+}
+
+tbody.table-display tr td:first-child {
+  font-weight: 500;
+  color: #263238;
+}
+
+tbody.table-display tr td:nth-child(2) {
+  color: #546e7a;
+  text-transform: capitalize;
+}
+
+input[type="datetime-local"] {
+  text-transform: uppercase !important;
+}
