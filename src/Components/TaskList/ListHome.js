@@ -96,7 +96,7 @@ const ListHome = ({ tasks = [] }) => {
               <div className="font-weight-light-bold">{selection}</div>
             </Grid>
           </Grid>
-          To confirm that you want to delete this task definition, choose the
+          To confirm that you want to delete this task, choose the
           confirm button below.
         </Box>
       ),
